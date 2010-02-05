@@ -12,10 +12,11 @@ import javax.swing.JPanel;
 public class TerrainFrame extends JFrame {
 
    private TerrainPanel terrainPanel;
-   private int size = (1<<9)+1;
+   private int size = (1<<6)+1;
+   private double scale = 10;
    Dimension dimension = new Dimension(size, size);
    private TerrainGenerator terrainGenerator = createGenerator();
-   private final TerrainRenderer renderer = new PlainGroundRenderer();
+   private final TerrainRenderer terrainRenderer = new PlainGroundRenderer();
 
    public TerrainFrame() throws HeadlessException {
       super();
@@ -25,7 +26,9 @@ public class TerrainFrame extends JFrame {
 
    public JPanel getTerrainPanel() {
       if (terrainPanel == null) {
-         terrainPanel = new TerrainPanel(getTerrainGenerator(), getRenderer());
+         TerrainRenderer renderer = getRenderer();
+         TerrainGenerator generator = getTerrainGenerator();
+         terrainPanel = new TerrainPanel(generator, renderer, scale);
          addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                terrainPanel.setTerrainGenerator(createGenerator());
@@ -38,7 +41,7 @@ public class TerrainFrame extends JFrame {
    }
 
    protected TerrainRenderer getRenderer() {
-      return renderer;
+      return terrainRenderer;
    }
 
    protected TerrainGenerator createGenerator() {
