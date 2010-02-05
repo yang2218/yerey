@@ -11,17 +11,22 @@ public class TerrainPanel extends JPanel {
 
    private TerrainGenerator terrainGenerator;
    private TerrainRenderer renderer;
+   private final double scale;
 
-   public TerrainPanel(TerrainGenerator terrainGenerator, TerrainRenderer renderer) {
+   public TerrainPanel(TerrainGenerator terrainGenerator, TerrainRenderer renderer, double scale) {
       setTerrainGenerator(terrainGenerator);
       this.renderer = renderer;
+      this.scale = scale;
       reset();
    }
 
    public void reset() {
       Dimension size = terrainGenerator.getSize();
-      setMinimumSize(size);
-      setPreferredSize(size);
+      int width = (int) Math.ceil(size.width * scale);
+      int height = (int) Math.ceil(size.height * scale);
+      Dimension scaled = new Dimension(width, height);
+      setMinimumSize(scaled);
+      setPreferredSize(scaled);
    }
    
    public TerrainGenerator getTerrainGenerator() {
@@ -36,12 +41,16 @@ public class TerrainPanel extends JPanel {
       Terrain terrain = terrainGenerator.getTerrain();
       Dimension size = terrain.getSize();
       Color color;
+      int rw = (int) Math.ceil(scale);
+      int rh = (int) Math.ceil(scale);
       for (int x = 0; x < size.width; x++) {
          for (int y = 0; y < size.height; y++) {
             double value = terrain.get(x,y);
             color = renderer.render(value);
             g.setColor(color);
-            g.fillRect(x, y, 1, 1);
+            int rx = (int) Math.ceil(x * scale);
+            int ry = (int) Math.ceil(y * scale);
+            g.fillRect(rx, ry, rw, rh);
          }
       }
    }
